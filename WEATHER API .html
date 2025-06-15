@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fdf6f0;
+      text-align: center;
+      padding: 50px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 1em;
+    }
+    .weather-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: #fffaeb;
+      border-radius: 8px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Weather App</h1>
+  <input type="text" id="city" placeholder="Enter city" />
+  <button onclick="getWeather()">Get Weather</button>
+
+  <div id="weather" class="weather-box"></div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById('city').value;
+      const apiKey = '1e8f60255367f83a1cd7f3a66b34c337';  // <-- Replace this
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      const weatherDiv = document.getElementById('weather');
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.cod !== 200) {
+          weatherDiv.innerHTML = `<p style="color:red">${data.message}</p>`;
+          return;
+        }
+
+        weatherDiv.innerHTML = `
+          <h2>${data.name}, ${data.sys.country}</h2>
+          <p>Temperature: ${data.main.temp} °C</p>
+          <p>Condition: ${data.weather[0].description}</p>
+        `;
+      } catch (err) {
+        weatherDiv.innerHTML = `<p>Error fetching data</p>`;
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
